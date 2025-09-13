@@ -21,6 +21,9 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: .
+          args: >
+            -Dsonar.projectKey=kwoshik8004_capstone-project
+            -Dsonar.organization=kwoshik8004
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
