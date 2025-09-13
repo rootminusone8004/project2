@@ -17,13 +17,24 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: SonarQube Scan
         id: sonarqube-scan-check
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-github-action@v2
         with:
           projectBaseDir: .
+          args: >
+            -Dsonar.projectKey=kwoshik8004_capstone
+            -Dsonar.organization=kwoshik8004
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Quality Gate Check
+        uses: SonarSource/sonarqube-quality-gate-action@v1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: kwoshik8004_capstone
+          SONAR_HOST_URL: https://sonarcloud.io
 
       - name: Summarize SonarQube job
         if: always()
