@@ -20,13 +20,7 @@ jobs:
 
       - name: SonarQube Scan
         id: sonarqube-scan-check
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          projectBaseDir: .
-          args: >
-            -Dsonar.projectKey=kwoshik8004_capstone
-            -Dsonar.organization=kwoshik8004
-            -Dsonar.qualitygate.wait=true
+        uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
