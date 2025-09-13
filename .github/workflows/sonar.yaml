@@ -24,9 +24,15 @@ jobs:
           args: >
             -Dsonar.projectKey=kwoshik8004_capstone-project
             -Dsonar.organization=kwoshik8004
-            -Dsonar.qualitygate.wait=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Quality Gate Check
+        uses: SonarSource/sonarqube-quality-gate-action@v1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: kwoshik8004_capstone-project
+          SONAR_HOST_URL: https://sonarcloud.io
 
       - name: Summarize SonarQube job
         if: always()
