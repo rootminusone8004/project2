@@ -22,8 +22,7 @@ jobs:
         with:
           projectBaseDir: .
           args: >
-            -Dsonar.projectKey=kwoshik8004_capstone-project
-            -Dsonar.organization=kwoshik8004
+            -Dsonar.projectKey=kwoshik8004_capstone
             -Dsonar.qualitygate.wait=true
             -Dsonar.qualitygate.timeout=600
         env:
