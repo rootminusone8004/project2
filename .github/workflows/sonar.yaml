@@ -30,7 +30,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_PROJECT_KEY: kwoshik8004_capstone-project
-          SONAR_ORGANIZATION: kwoshik8004
           SONAR_HOST_URL: https://sonarcloud.io
 
       - name: Summarize SonarQube job
