@@ -20,7 +20,7 @@ jobs:
 
       - name: SonarQube Scan
         id: sonarqube-scan-check
-        uses: SonarSource/sonarqube-github-action@v2
+        uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: .
           args: >
