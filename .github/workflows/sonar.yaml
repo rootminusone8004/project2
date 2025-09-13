@@ -24,6 +24,7 @@ jobs:
           args: >
             -Dsonar.projectKey=kwoshik8004_capstone-project
             -Dsonar.organization=kwoshik8004
+            -Dsonar.qualitygate.wait=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -36,7 +37,6 @@ jobs:
           echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| Checkout | ✅ Success |" >> $GITHUB_STEP_SUMMARY
           echo "| SonarQube Scan | $([[ '${{ steps.sonarqube-scan-check.outcome }}' == 'success' ]] && echo ✅ Success || echo ❌ Failed) |" >> $GITHUB_STEP_SUMMARY
-          echo "| Quality Gate | $([[ '${{ steps.sonarqube-quality-gate-check.outcome }}' == 'success' ]] && echo ✅ Passed || echo ❌ Failed) |" >> $GITHUB_STEP_SUMMARY
 
   push_to_registry:
     name: Push Docker image to Docker Hub
