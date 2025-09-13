@@ -15,17 +15,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 0
       - name: SonarQube Scan
         id: sonarqube-scan-check
-        uses: SonarSource/sonarcloud-github-action@v2
+        uses: SonarSource/sonarqube-scan-action@v5
         with:
           projectBaseDir: .
-          args: >
-            -Dsonar.projectKey=kwoshik8004_capstone
-            -Dsonar.organization=kwoshik8004
-            -Dsonar.qualitygate.wait=true
-            -Dsonar.qualitygate.timeout=600
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
