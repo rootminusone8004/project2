@@ -41,4 +41,4 @@ jobs:
           echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| Checkout | ✅ Success |" >> $GITHUB_STEP_SUMMARY
           echo "| SonarQube Scan | $([[ '${{ steps.sonarqube-scan-check.outcome }}' == 'success' ]] && echo ✅ Success || echo ❌ Failed) |" >> $GITHUB_STEP_SUMMARY
-          echo "| SonarQube Quality Gate | $([[ '${{ steps.sonarqube-quality-check }}' == 'success' ]] && echo ✅ Success || echo ❌ Failed) |" >> $GITHUB_STEP_SUMMARY
+          echo "| SonarQube Quality Gate | $([[ '${{ steps.sonarqube-quality-check.outcome }}' == 'success' ]] && echo ✅ Success || echo ❌ Failed) |" >> $GITHUB_STEP_SUMMARY
