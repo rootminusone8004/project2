@@ -42,3 +42,67 @@ jobs:
           echo "| Checkout | ✅ Success |" >> $GITHUB_STEP_SUMMARY
           echo "| SonarQube Scan | $([[ '${{ steps.sonarqube-scan-check.outcome }}' == 'success' ]] && echo ✅ Success || echo ❌ Failed) |" >> $GITHUB_STEP_SUMMARY
           echo "| SonarQube Quality Gate | $([[ '${{ steps.sonarqube-quality-check.outcome }}' == 'success' ]] && echo ✅ Success || echo ❌ Failed) |" >> $GITHUB_STEP_SUMMARY
+        
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    needs:
+      - sonarqube
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+    steps:
+      - name: Check out the repo with tags
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        id: docker-login
+        uses: docker/login-action@master
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Get tag if exists
+        id: get_tag
+        run: |
+          git fetch --tags
+          TAG=$(git describe --tags --exact-match 2>/dev/null || echo "latest")
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Build and push Backend Docker image
+        id: push_backend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/capstone-project-backend:${{ steps.get_tag.outputs.tag }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/capstone-project-backend:latest
+
+      - name: Build and push Frontend Docker image
+        id: push_frontend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/capstone-project-frontend:${{ steps.get_tag.outputs.tag }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/capstone-project-frontend:latest
+
+      - name: Summarize Docker build & push
+        if: always()
+        run: |
+          echo "## 🐳 Docker Image Push Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Step | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Checkout with tags | ✅ Success |" >> $GITHUB_STEP_SUMMARY
+          echo "| Docker Login | $([[ '${{ steps.docker-login.outcome }}' == 'success' ]] && echo ✅ Success || echo ❌ Failed) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Get Git Tag | $([[ '${{ steps.get_tag.outcome }}' == 'success' ]] && echo ✅ Success || echo ❌ Failed) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Backend Image | $([[ '${{ steps.push_backend.outcome }}' == 'success' ]] && echo ✅ Success || echo ❌ Failed) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Frontend Image | $([[ '${{ steps.push_frontend.outcome }}' == 'success' ]] && echo ✅ Success || echo ❌ Failed) |" >> $GITHUB_STEP_SUMMARY
