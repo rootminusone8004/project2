@@ -93,6 +93,8 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/capstone-project-frontend:${{ steps.get_tag.outputs.tag }}
             ${{ secrets.DOCKERHUB_USERNAME }}/capstone-project-frontend:latest
+          build-args: |
+            VITE_API_BASE_URL_ARG=${{ secrets.VITE_API_BASE_URL_ARG }}
 
       - name: Summarize Docker build & push
         if: always()

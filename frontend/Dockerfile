@@ -15,7 +15,7 @@ RUN chown -R appuser:appuser /app
 USER appuser
 
 # Set environment variables
-ARG VITE_API_BASE_URL_ARG=http://172.16.69.150:30999
+ARG VITE_API_BASE_URL_ARG
 ENV VITE_API_BASE_URL=${VITE_API_BASE_URL_ARG}
 
 
