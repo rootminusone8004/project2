@@ -1,0 +1,36 @@
+name: Build and Test App
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  sonarqube:
+    name: SonarQube
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: SonarQube Scan
+        id: sonarqube-scan-check
+        uses: SonarSource/sonarqube-scan-action@v5
+        with:
+          projectBaseDir: .
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Summarize SonarQube job
+        if: always()
+        run: |
+          echo "## 🧪 SonarQube Analysis Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Step | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Checkout | ✅ Success |" >> $GITHUB_STEP_SUMMARY
+          echo "| SonarQube Scan | $([[ '${{ steps.sonarqube-scan-check.outcome }}' == 'success' ]] && echo ✅ Success || echo ❌ Failed) |" >> $GITHUB_STEP_SUMMARY
