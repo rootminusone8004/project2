@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deploy
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend-ctr
+          image: rootovertwo/capstone-project-backend:latest
+          env:
+            - name: VITE_API_BASE_URL_ARG
+              value: http://13.223.55.82:5050
+          ports:
+            - containerPort: 5050
+          env:
+            - name: MONGO_URL
+              value: mongodb://mongodb:27017/ostad-db
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: ostad
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: ostad
+            - name: REDIS_HOST
+              value: redis
+            - name: REDIS_PORT
+              value: "6379"
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5050
+      nodePort: 30017
+  type: NodePort

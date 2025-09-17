@@ -43,9 +43,11 @@ const ResultChecker = () => {
 
   // ******************************Change color**********************************************
   const fetchResult = async (id) => {
+    const configResponse = await fetch("/config.json");
+    const config = await configResponse.json();
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/result/${id}`
+        `${config.VITE_API_BASE_URL}/result/${id}`
       );
 
       if (!response.ok) {
