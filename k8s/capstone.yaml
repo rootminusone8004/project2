@@ -5,7 +5,7 @@ metadata:
 data:
   config.json: |
     {
-      "VITE_API_BASE_URL": "http://18.232.101.169:30017"
+      "VITE_API_BASE_URL": "http://54.198.143.174:30017"
     }
 ---
 apiVersion: apps/v1
