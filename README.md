@@ -1,8 +1,6 @@
-# 🏫 Ostad Student Result Management System – DevOps Practice
+# Project 2
 
-Hello students!
-
-This project contains the **UI and backend** for a student result management system. Your task is to **set up the backend services (MongoDB, Redis, Mongo Express)**, configure the environment, run seeding, and deploy the backend using PM2.
+This project contains the **UI and backend** for a student result management system.
 
 ---
 
@@ -149,7 +147,3 @@ node seed.js
 | Stop backend                               | `pm2 stop ostad-backend`                     |
 | View backend logs                          | `pm2 logs ostad-backend`                     |
 | Start services (Mongo/Redis/Mongo Express) | `docker-compose up -d`                       |
-
----
-
-This README is **ready for DevOps students** to practice: **environment configuration, Docker setup, seeding, PM2 process management, and running the full stack**.
