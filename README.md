@@ -1,149 +1,208 @@
 # Project 2
 
-This project contains the **UI and backend** for a student result management system.
+<p align="center">
+  <img src="./assets/results/result.png" alt="Argocd Images"/>
+</p>
 
----
+## Project Overview
 
-## 1️⃣ Frontend Instructions
+This project contains the **UI and backend** for a student result management system. It demonstrates a fully containerized and automated deployment pipeline using **Kubernetes**, **ArgoCD**, **Prometheus**, **Grafana**, and **SonarQube**. The infrastructure is built for scalable and observable microservices, enabling CI/CD with robust monitoring and quality assurance tools.
 
-**Folder:** `frontend` (React + Tailwind)
+## 📦 Deployment
 
-1. Install dependencies:
+In order to deploy the project, see [instructions](Instructions.md) for details.
 
-```bash
-npm install
+## 🛠️ Tools & Technologies
+
+- **Kubernetes** – Container orchestration
+- **ArgoCD** – GitOps continuous delivery
+- **Prometheus** – Metrics collection and alerting
+- **Grafana** – Monitoring dashboards
+- **Node Exporter** – Host-level metrics exporter
+- **SonarQube** – Static code analysis
+- **Kubernetes Dashboard** – Visual UI for managing workloads
+- **Docker** – Containerization of applications
+- **Helm** – Package management for Kubernetes
+
+## 🚀 CI/CD Pipeline
+
+<div align="center">
+
+```mermaid
+flowchart
+
+A(code push to github) --> H(Github Actions execute CI/CD Pipeline)
+H --> B(SonarQube analysis)
+B --> C(Build Docker Image)
+C --> D(Image Deployed to registry)
+D --> E(ArgoCD syncs kubernetes menifests to cluster)
+E --> F(Application is deployed to cluster)
+F --> G(Monitoring tools observe performance)
+```
+</div>
+
+## 🔧 infrastructure
+
+This project uses Terraform + Ansible to spin up a Kubernetes cluster with kubeadm.
+- 🔧 Infrastructure provisioning → **Terraform**
+- ⚙️ Cluster setup & configuration → **Ansible**
+- 🎯 Target: Bare-metal cloud VMs (via SSH) → **AWS EC2**
+- 🧠 Bootstrap: `kubeadm`-based Kubernetes install
+
+### 🧱 Terraform – Infra Provisioning
+
+Terraform handles EC2 instance creation, networking, and any cloud init scripts.
+
+``` bash
+$ cd terraform/kubeadm
+$ terraform init
+$ terraform apply -auto-approve
 ```
 
-2. Start development server:
+[![View Repository](https://img.shields.io/badge/View%20Repository-Terraform-6A1B9A?style=flat-square&logo=github)](https://github.com/rootminusone8004/terraform)
 
-```bash
-npm run dev
+### ⚙️ Ansible – Kubernetes Setup
+
+Once the infra is live, Ansible kicks in to install and configure Kubernetes using `kubeadm`
+
+``` bash
+$ cd ansible/
+$ ansible all -i inventory/kubeadm.yaml -m ping
+$ ansible-playbook --ask-become-pass --skip-tags "docker_only" -i inventory/kubeadm.yaml playbooks/kubeadm.yaml
 ```
 
-- Runs on port `5173` by default.
-- Ensure environment variable is set:
+[![View Repository](https://img.shields.io/badge/View%20Repository-Ansible-FF2722?style=flat-square&logo=github)](https://github.com/rootminusone8004/ansible)
 
-```env
-VITE_API_BASE_URL=http://localhost:5050
+This playbook handles:
+- Installing containerd
+- Running kubeadm init
+- Setting up kubectl access
+
+### 🗺️ Flow Summary
+
+<div align="center">
+
+```mermaid
+flowchart
+
+    A(Terraform: Provision Infra) --> B(Ansible: Configure Kubernetes)
+    B --> C(kubeadm init / join)
+    C --> D(Cluster Ready ✅)
 ```
+</div>
 
-3. Build production version:
+## 📸 Dashboards & Monitoring screenshots
 
-```bash
-npm run build
-```
+### 🔹 ArgoCD (GitOps Management)
 
----
+<p align="center">
+  <img src="assets/argocd/1_nodes.png" alt="Argocd Images"/>
+  <br><i>Cluster nodes</i>
+</p>
 
-## 2️⃣ Backend Instructions
+<p align="center">
+  <img src="assets/argocd/2_backend.png" alt="Argocd Images"/>
+  <br><i>Backend pods</i>
+</p>
 
-**Folder:** `server`
+<p align="center">
+  <img src="assets/argocd/3_capstone.png" alt="Argocd Images"/>
+  <br><i>Frontend pods</i>
+</p>
 
-1. Environment variables `.env`:
+<p align="center">
+  <img src="assets/argocd/4_redis.png" alt="Argocd Images"/>
+  <br><i>Other pods</i>
+</p>
 
-```env
-PORT=5050
-MONGO_URL=mongodb://ostad:ostad@localhost:27017
-REDIS_URL=redis://localhost:6379
-DB_NAME=Ostad-DB
-CACHE_TTL=600
-```
+<p align="center">
+  <img src="assets/argocd/5_metrics.png" alt="Argocd Images"/>
+  <br><i>Cluster Metrics</i>
+</p>
 
-2. Run server with PM2:
+### 🔹 Kubernetes Dashboard
 
-```bash
-pm2 start server.js --name "ostad-backend"
-```
+<p align="center">
+  <img src="assets/k8s-dashboard/deployments.png" alt="k8s Dashboard Images"/>
+  <br><i>kubernetes deployments</i>
+</p>
 
-3. Stop / restart server with PM2:
+<p align="center">
+  <img src="assets/k8s-dashboard/pod1.png" alt="k8s Dashboard Images"/><br>
+  <img src="assets/k8s-dashboard/pod2.png" alt="k8s Dashboard Images"/>
+  <br><i>kubernetes pods</i>
+</p>
 
-```bash
-pm2 stop ostad-backend
-pm2 restart ostad-backend
-pm2 logs ostad-backend
-```
+<p align="center">
+  <img src="assets/k8s-dashboard/replica.png" alt="k8s Dashboard Images"/>
+  <br><i>replica sets</i>
+</p>
 
----
+<p align="center">
+  <img src="assets/k8s-dashboard/stateful.png" alt="k8s Dashboard Images"/>
+  <br><i>stateful sets</i>
+</p>
 
-## 3️⃣ Database & Caching Services
+<p align="center">
+  <img src="assets/k8s-dashboard/workload.png" alt="k8s Dashboard Images"/>
+  <br><i>workload</i>
+</p>
 
-You need to **set up MongoDB, Redis, and Mongo Express**. Recommended using Docker Compose:
+<p align="center">
+  <img src="assets/k8s.png" alt="k8s Dashboard Images"/>
+  <br><i>Terminal showing pods and services</i>
+</p>
 
-```yaml
+### 🔹 Monitoring Stack
 
-      MONGO_INITDB_ROOT_USERNAME: ostad
-      MONGO_INITDB_ROOT_PASSWORD: ostad
-      MONGO_INITDB_DATABASE: Ostad-DB
-    ports:
-      - "27017:27017"
-  mongo-express:
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ostad
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ostad
-      ME_CONFIG_MONGODB_SERVER: mongo
-      ME_CONFIG_BASICAUTH_USERNAME: admin
-      ME_CONFIG_BASICAUTH_PASSWORD: admin
-    ports:
-      - "8081:8081"
+#### 📊 Grafana Dashboards
 
-  redis:
-    image: redis:7.0
-    ports:
-      - "6379:6379"
-```
+<p align="center">
+  <img src="assets/monitor/grafana/usage1.png" alt="monitoring stack Images"/><br>
+  <img src="assets/monitor/grafana2/usage1.png" alt="monitoring stack Images"/>
+  <br><i>CPU metrics</i>
+</p>
 
-- **Mongo Express Web UI:** [http://localhost:8081](http://localhost:8081)
+<p align="center">
+  <img src="assets/monitor/grafana2/usage2.png" alt="monitoring stack Images"/><br>
+  <img src="assets/monitor/grafana2/usage3.png" alt="k8s Dashboard Images"/>
+  <br><i>pods' resource metrics</i>
+</p>
 
-  - Web login: `admin / admin`
-  - Mongo login: `ostad / ostad`
+#### 📊 Prometheus Dashboards
 
-- **Redis:** `localhost:6379`
+<p align="center">
+  <img src="assets/monitor/prometheus/cpu.png" alt="monitoring stack Images"/>
+  <br><i>CPU metrics</i>
+</p>
 
----
+<p align="center">
+  <img src="assets/monitor/prometheus/network.png" alt="monitoring stack Images"/>
+  <br><i>Network metrics</i>
+</p>
 
-## 4️⃣ Seeding Data
+<p align="center">
+  <img src="assets/monitor/prometheus/prom1.png" alt="monitoring stack Images"/>
+  <br><i>Healthy pods</i>
+</p>
 
-To populate **students and results**:
+<p align="center">
+  <img src="assets/monitor/prometheus/prom2.png" alt="monitoring stack Images"/>
+  <br><i>Memory usage query</i>
+</p>
 
-```bash
-node seed.js
-```
+### 🎯 Sonarqube code analysis
 
-- Seeds **20,000 students** and **results** in batches.
-- Make sure MongoDB is running before seeding.
-- After seeding, verify in **Mongo Express**.
+<p align="center">
+  <img src="assets/sonar/dev/sonar_abridged.png" alt="saonarqube"/>
+  <br><i>Quality gate passing</i>
+</p>
 
----
+<p align="center">
+  <img src="assets/sonar/dev/sonar.png" alt="saonarqube"/>
+  <br><i>Detailed view</i>
+</p>
 
-## 5️⃣ Useful Backend Endpoints
+## 📄 License
 
-| Endpoint       | Method | Description                  |
-| -------------- | ------ | ---------------------------- |
-| `/getStudents` | GET    | List all registered students |
-| `/addStudent`  | POST   | Add new student              |
-| `/result/:id`  | GET    | Fetch result by student ID   |
-
----
-
-## 6️⃣ Notes for Students
-
-- Frontend calls backend via **`VITE_API_BASE_URL=http://localhost:5050`**
-- Backend caching is handled with Redis (`CACHE_TTL=600`)
-- Use **PM2** to keep backend running in production
-- MongoDB and Redis can be **Dockerized** or installed locally
-- Mongo Express is optional but useful for verifying data
-
----
-
-## 7️⃣ Recommended Commands
-
-| Task                                       | Command                                      |
-| ------------------------------------------ | -------------------------------------------- |
-| Start frontend                             | `npm run dev`                                |
-| Build frontend                             | `npm run build`                              |
-| Install backend deps                       | `npm install`                                |
-| Run backend via PM2                        | `pm2 start server.js --name "ostad-backend"` |
-| Seed database                              | `node seed.js`                               |
-| Stop backend                               | `pm2 stop ostad-backend`                     |
-| View backend logs                          | `pm2 logs ostad-backend`                     |
-| Start services (Mongo/Redis/Mongo Express) | `docker-compose up -d`                       |
+This project is licensed under MIT license. See the [LICENSE](LICENSE.txt) file for details.
