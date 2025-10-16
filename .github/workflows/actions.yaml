@@ -2,10 +2,8 @@ name: Build and Test App
 
 on:
   push:
-    branches:
-      - master
-    tags:
-      - '*'
+    branches: [master]
+    tags: ['*']
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -19,7 +17,7 @@ jobs:
           fetch-depth: 0
       - name: SonarQube Scan
         id: sonarqube-scan-check
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v6
         with:
           projectBaseDir: .
         env:
@@ -31,6 +29,6 @@ jobs:
           echo "## 🧪 SonarQube Analysis Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Step | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "|--|--|" >> $GITHUB_STEP_SUMMARY
           echo "| Checkout | ✅ Success |" >> $GITHUB_STEP_SUMMARY
           echo "| SonarQube Scan | $([[ '${{ steps.sonarqube-scan-check.outcome }}' == 'success' ]] && echo ✅ Success || echo ❌ Failed) |" >> $GITHUB_STEP_SUMMARY
