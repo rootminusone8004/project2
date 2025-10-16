@@ -12,9 +12,11 @@ jobs:
     name: SonarQube
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: checkout the code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: SonarQube Scan
         id: sonarqube-scan-check
         uses: SonarSource/sonarqube-scan-action@v6
